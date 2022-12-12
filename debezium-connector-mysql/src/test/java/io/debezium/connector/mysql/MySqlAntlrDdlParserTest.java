@@ -3112,6 +3112,37 @@ public class MySqlAntlrDdlParserTest {
     }
 
     @Test
+    @FixFor("DBZ-1496")
+    public void shouldParseCreateTableStatementWithLikeWhenOriginalTableExist() {
+        String ddl = "CREATE TABLE table1 (`c1` INT NOT NULL);";
+        ddl += "CREATE TABLE table2 LIKE table1;";
+        parser.parse(ddl, tables);
+        assertThat(tables.size()).isEqualTo(2);
+        Table table1 = tables.forTable(new TableId(null, null, "table1"));
+        Table table2 = tables.forTable(new TableId(null, null, "table2"));
+        assertThat(table1.retrieveColumnNames()).containsExactly("c1");
+        assertThat(table2.retrieveColumnNames()).containsExactly("c1");
+    }
+
+    @Test
+    @FixFor("DBZ-1496")
+    public void shouldParseCreateTableStatementWithLikeWhenOriginalTableDoesNotExist() {
+        String ddl = "CREATE TABLE table2 LIKE table1;";
+        parser.parse(ddl, tables);
+        assertThat(tables.size()).isEqualTo(0);
+    }
+
+    @Test
+    @FixFor("DBZ-1496")
+    public void shouldParseCreateTableStatementWithLikeWhenOriginalTableIsLocked() {
+        String ddl = "CREATE TABLE table1 (`c1` INT NOT NULL);";
+        ddl += "LOCK TABLE table1 READ;";
+        ddl += "CREATE TABLE table2 LIKE table1;";
+        parser.parse(ddl, tables);
+        assertThat(tables.size()).isEqualTo(0);
+    }
+
+    @Test
     @FixFor("DBZ-2330")
     public void shouldNotNullPositionBeforeOrAfterDefaultValue() {
         String ddl = "CREATE TABLE my_table (" +

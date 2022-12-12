@@ -55,18 +55,19 @@ public class MySqlAntlrDdlParserListener extends MySqlParserBaseListener impleme
 
     public MySqlAntlrDdlParserListener(MySqlAntlrDdlParser parser) {
         // initialize listeners
-        listeners.add(new CreateAndAlterDatabaseParserListener(parser));
-        listeners.add(new DropDatabaseParserListener(parser));
-        listeners.add(new CreateTableParserListener(parser, listeners));
         listeners.add(new AlterTableParserListener(parser, listeners));
-        listeners.add(new DropTableParserListener(parser));
-        listeners.add(new RenameTableParserListener(parser));
-        listeners.add(new TruncateTableParserListener(parser));
-        listeners.add(new CreateViewParserListener(parser, listeners));
         listeners.add(new AlterViewParserListener(parser, listeners));
-        listeners.add(new DropViewParserListener(parser));
+        listeners.add(new CreateAndAlterDatabaseParserListener(parser));
+        listeners.add(new CreateTableParserListener(parser, listeners));
         listeners.add(new CreateUniqueIndexParserListener(parser));
+        listeners.add(new CreateViewParserListener(parser, listeners));
+        listeners.add(new DropDatabaseParserListener(parser));
+        listeners.add(new DropTableParserListener(parser));
+        listeners.add(new DropViewParserListener(parser));
+        listeners.add(new LockTableParserListener(parser));
+        listeners.add(new RenameTableParserListener(parser));
         listeners.add(new SetStatementParserListener(parser));
+        listeners.add(new TruncateTableParserListener(parser));
         listeners.add(new UseStatementParserListener(parser));
     }
 
